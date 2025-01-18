@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
 
 dotenv.config();
 
@@ -13,12 +13,9 @@ const linkSchema = new mongoose.Schema({
 const Link = mongoose.model('Link', linkSchema);
 
 export default async function handler(req, res) {
-    console.log('Request received:', req.method, req.body); // Log da requisição
     if (req.method === 'POST') {
         const { originalUrl } = req.body;
-        console.log('Original URL:', originalUrl); // Log da URL original
 
-        // Lógica para encurtar o link
         try {
             const shortUrl = Math.random().toString(36).substring(2, 8); // Gera um código curto
             const newLink = new Link({ originalUrl, shortUrl });
