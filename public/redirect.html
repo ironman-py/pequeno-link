@@ -17,7 +17,7 @@
 
         // Função para gerar o link encurtado
         async function generateShortLink() {
-            const response = await fetch('/shorten', {
+            const response = await fetch('api/shorten', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
