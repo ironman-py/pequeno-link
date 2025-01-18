@@ -14,6 +14,15 @@ const Link = mongoose.model('Link', linkSchema);
 
 export default async function handler(req, res) {
     if (req.method === 'POST') {
+        // Middleware para tratar o corpo da requisição
+        if (!req.body) {
+            let body = '';
+            for await (const chunk of req) {
+                body += chunk;
+            }
+            req.body = JSON.parse(body);
+        }
+
         const { originalUrl } = req.body;
 
         try {
