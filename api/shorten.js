@@ -13,8 +13,10 @@ const linkSchema = new mongoose.Schema({
 const Link = mongoose.model('Link', linkSchema);
 
 export default async function handler(req, res) {
+    console.log('Request received:', req.method, req.body); // Log da requisição
     if (req.method === 'POST') {
         const { originalUrl } = req.body;
+        console.log('Original URL:', originalUrl); // Log da URL original
 
         // Lógica para encurtar o link
         try {
