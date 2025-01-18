@@ -17,13 +17,21 @@
 
         // Função para gerar o link encurtado
         async function generateShortLink() {
-            const response = await fetch('api/shorten', {
+            const response = await fetch('/api/shorten', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ originalUrl })
             });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Erro na API:', errorText);
+                alert('Erro ao encurtar o link: ' + errorText);
+                return;
+            }
+
             const data = await response.json();
             shortUrl = data.shortUrl; // Armazena o short URL
             document.getElementById('countdownContainer').style.display = 'none'; // Oculta a contagem
@@ -66,17 +74,27 @@
         }
 
         function shareOnSocialMedia(platform) {
-            let shareUrl = '';
-            if (platform === 'facebook') {
-                shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shortUrl)}`;
-            } else if (platform === 'twitter') {
-                shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shortUrl)}&text=Confira este link encurtado!`;
-            } else if (platform === 'linkedin') {
-                shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shortUrl)}`;
-            } else if (platform === 'whatsapp') {
-                shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shortUrl)}`;
+            const shareUrl = shortUrl; // Certifique-se de que shortUrl contém a URL encurtada completa
+            let shareLink;
+
+            switch (platform) {
+                case 'facebook':
+                    shareLink = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+                    break;
+                case 'twitter':
+                    shareLink = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=Confira este link!`;
+                    break;
+                case 'linkedin':
+                    shareLink = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
+                    break;
+                case 'whatsapp':
+                    shareLink = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareUrl)}`;
+                    break;
+                default:
+                    return;
             }
-            window.open(shareUrl, '_blank'); // Abre o link em uma nova aba
+
+            window.open(shareLink, '_blank'); // Abre o link de compartilhamento em uma nova aba
         }
 
         window.onload = () => {
