@@ -7,8 +7,14 @@ document.getElementById('shortenBtn').addEventListener('click', async () => {
         },
         body: JSON.stringify({ originalUrl: urlInput }),
     });
-    const data = await response.json();
-    
-    // Redireciona para a página redirect.html com o URL original
+
+    if (!response.ok) {
+        const errorText = await response.text(); // Obtenha a resposta como texto
+        console.error('Erro na API:', errorText); // Log do erro
+        alert('Erro ao encurtar o link: ' + errorText); // Exibe um alerta com o erro
+        return; // Interrompe a execução se houver erro
+    }
+
+    const data = await response.json(); // Converta a resposta em JSON
     window.location.href = `/redirect.html?url=${encodeURIComponent(data.originalUrl)}`;
 });
