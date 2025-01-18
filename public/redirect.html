@@ -13,7 +13,7 @@
     <script>
         let countdown = 5; // Contagem regressiva de 5 segundos
         let originalUrl = ''; // URL original
-        let shortUrl = ''; // URL encurtada
+        let shortUrl = ''; // URL encurtado
 
         // Função para gerar o link encurtado
         async function generateShortLink() {
@@ -36,7 +36,7 @@
             shortUrl = data.shortUrl; // Armazena o short URL
             document.getElementById('countdownContainer').style.display = 'none'; // Oculta a contagem
             document.getElementById('shareButtons').style.display = 'block'; // Mostra os botões de compartilhamento
-            document.getElementById('result').innerHTML = `Link encurtado: <a href="${shortUrl}" target="_blank">${shortUrl}</a>`; // Exibe o link gerado
+            document.getElementById('result').innerHTML = `Link encurtado: <a href="${originalUrl}" target="_blank">${shortUrl}</a>`; // Exibe o link gerado
             
             // Gera o QR Code
             $('#qrcode').empty(); // Limpa o QR Code anterior
