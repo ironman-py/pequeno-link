@@ -15,11 +15,17 @@ const Link = mongoose.model('Link', linkSchema);
 export default async function handler(req, res) {
     if (req.method === 'POST') {
         const { originalUrl } = req.body;
-        const shortUrl = Math.random().toString(36).substring(2, 8); // Gera um código curto
-        const newLink = new Link({ originalUrl, shortUrl });
-        await newLink.save();
-        console.log(`Link encurtado: ${shortUrl} para ${originalUrl}`); // Log para depuração
-        res.json({ originalUrl, shortUrl });
+
+        // Lógica para encurtar o link
+        try {
+            const shortUrl = Math.random().toString(36).substring(2, 8); // Gera um código curto
+            const newLink = new Link({ originalUrl, shortUrl });
+            await newLink.save();
+            res.status(200).json({ originalUrl, shortUrl });
+        } catch (error) {
+            console.error('Erro ao salvar o link:', error);
+            res.status(500).json({ error: 'Erro ao encurtar o link' });
+        }
     } else {
         res.setHeader('Allow', ['POST']);
         res.status(405).end(`Method ${req.method} Not Allowed`);
