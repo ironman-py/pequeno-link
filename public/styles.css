@@ -1,0 +1,85 @@
+/* public/styles.css */
+body {
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    text-align: center;
+    background-color: #121212;
+    background-image: linear-gradient(135deg, rgba(18, 18, 18, 0.8), rgba(0, 0, 0, 0.8));
+    color: #e0e0e0;
+}
+
+h1, h2 {
+    margin: 10px 0;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+input {
+    padding: 10px;
+    width: 90%;
+    max-width: 300px;
+    margin: 10px 0;
+    border: 1px solid #00bcd4;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+input::placeholder {
+    color: #00bcd4;
+}
+
+button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: #00bcd4;
+    color: black;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+    margin: 5px;
+    width: auto;
+}
+
+button:hover {
+    background-color: #0097a7;
+}
+
+#result {
+    margin-top: 20px;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+#shareButtons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Estilos para telas menores */
+@media (max-width: 600px) {
+    body {
+        height: auto;
+        padding: 20px;
+    }
+
+    h1, h2 {
+        font-size: 1.5em;
+    }
+
+    input, button {
+        width: 100%;
+        max-width: none;
+    }
+
+    #qrcode {
+        width: 80%;
+        max-width: 150px;
+    }
+}

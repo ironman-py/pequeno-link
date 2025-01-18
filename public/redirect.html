@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encurtador de Links - Compartilhe com Facilidade</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+    <meta name="description" content="Encurtador de links fácil e rápido. Compartilhe seus links de forma prática e segura.">
+    <meta name="keywords" content="encurtador de links, links curtos, compartilhar links, URL encurtada">
+    <script>
+        let countdown = 5; // Contagem regressiva de 5 segundos
+        let originalUrl = ''; // URL original
+        let shortUrl = ''; // URL encurtado
+
+        // Função para gerar o link encurtado
+        async function generateShortLink() {
+            const response = await fetch('/shorten', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ originalUrl })
+            });
+            const data = await response.json();
+            shortUrl = data.shortUrl; // Armazena o short URL
+            document.getElementById('countdownContainer').style.display = 'none'; // Oculta a contagem
+            document.getElementById('shareButtons').style.display = 'block'; // Mostra os botões de compartilhamento
+            document.getElementById('result').innerHTML = `Link encurtado: <a href="${originalUrl}" target="_blank">${shortUrl}</a>`; // Exibe o link gerado
+            
+            // Gera o QR Code
+            $('#qrcode').empty(); // Limpa o QR Code anterior
+            $('#qrcode').qrcode({
+                text: shortUrl,
+                width: 100, // Largura do QR Code
+                height: 100 // Altura do QR Code
+            }); // Gera o QR Code para o link encurtado
+            
+            sessionStorage.setItem('linkGenerated', 'true'); // Marca que o link foi gerado
+        }
+
+        function updateCountdown() {
+            document.getElementById('countdown').innerText = countdown;
+            if (countdown === 0) {
+                generateShortLink(); // Gera o link encurtado após 5 segundos
+            } else {
+                countdown--;
+                setTimeout(updateCountdown, 1000); // Atualiza a contagem a cada segundo
+            }
+        }
+
+        function shortenNewLink() {
+            const newUrlInput = document.getElementById('newUrlInput').value;
+            if (newUrlInput) {
+                originalUrl = newUrlInput; // Atualiza a URL original com a nova entrada
+                countdown = 5; // Reinicia a contagem
+                document.getElementById('countdownContainer').style.display = 'block'; // Mostra a contagem novamente
+                document.getElementById('shareButtons').style.display = 'none'; // Oculta os botões de compartilhamento
+                document.getElementById('result').innerHTML = ''; // Limpa o resultado anterior
+                $('#qrcode').empty(); // Limpa o QR Code anterior
+                sessionStorage.removeItem('linkGenerated'); // Remove a marca de link gerado
+                updateCountdown(); // Inicia a contagem novamente
+            }
+        }
+
+        function shareOnSocialMedia(platform) {
+            let shareUrl = '';
+            if (platform === 'facebook') {
+                shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shortUrl)}`;
+            } else if (platform === 'twitter') {
+                shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shortUrl)}&text=Confira este link encurtado!`;
+            } else if (platform === 'linkedin') {
+                shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shortUrl)}`;
+            } else if (platform === 'whatsapp') {
+                shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shortUrl)}`;
+            }
+            window.open(shareUrl, '_blank'); // Abre o link em uma nova aba
+        }
+
+        window.onload = () => {
+            // Obtém o URL original da query string
+            originalUrl = new URLSearchParams(window.location.search).get('url');
+
+            // Verifica se o link já foi gerado
+            if (!sessionStorage.getItem('linkGenerated')) {
+                updateCountdown(); // Inicia a contagem ao carregar a página
+            } else {
+                // Se o link já foi gerado, oculta a contagem e mostra os botões de compartilhamento
+                document.getElementById('countdownContainer').style.display = 'none';
+                document.getElementById('shareButtons').style.display = 'block';
+            }
+        };
+    </script>
+</head>
+<body>
+    <div id="countdownContainer">
+        <h1>Gerando seu link encurtado em <span id="countdown">5</span> segundos...</h1>
+    </div>
+    
+    <h2>Digite um novo link para encurtar:</h2>
+    <input type="text" id="newUrlInput" placeholder="Cole seu link aqui">
+    <button onclick="shortenNewLink()">Encurtar Novo Link</button>
+
+    <div id="shareButtons" style="display: none; margin-top: 20px;">
+        <h2>Compartilhe seu link:</h2>
+        <button onclick="shareOnSocialMedia('facebook')">Compartilhar no Facebook</button>
+        <button onclick="shareOnSocialMedia('twitter')">Compartilhar no Twitter</button>
+        <button onclick="shareOnSocialMedia('linkedin')">Compartilhar no LinkedIn</button>
+        <button onclick="shareOnSocialMedia('whatsapp')">Compartilhar no WhatsApp</button>
+    </div>
+
+    <div id="result" style="margin-top: 20px;"></div>
+    <div id="qrcode" style="margin-top: 20px;"></div>
+</body>
+</html>
