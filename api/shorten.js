@@ -12,27 +12,21 @@ const linkSchema = new mongoose.Schema({
 
 const Link = mongoose.model('Link', linkSchema);
 
-
 export default async function handler(req, res) {
     if (req.method === 'POST') {
+        const { originalUrl } = req.body;
+
         try {
-            const { originalUrl } = req.body;
-
-            if (!originalUrl) {
-                return res.status(400).json({ error: 'URL original é obrigatória.' });
-            }
-
             const shortUrl = Math.random().toString(36).substring(2, 8);
             const newLink = new Link({ originalUrl, shortUrl });
             await newLink.save();
-
-            return res.status(200).json({ originalUrl, shortUrl });
+            res.status(200).json({ originalUrl, shortUrl });
         } catch (error) {
-            console.error('Erro ao processar a requisição:', error);
-            return res.status(500).json({ error: 'Erro interno do servidor.' });
+            console.error('Erro ao salvar o link:', error);
+            res.status(500).json({ error: 'Erro ao encurtar o link' });
         }
     } else {
         res.setHeader('Allow', ['POST']);
-        return res.status(405).json({ error: `Method ${req.method} Not Allowed` });
+        res.status(405).end(`Method ${req.method} Not Allowed`);
     }
 }
