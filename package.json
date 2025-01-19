@@ -4,9 +4,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "vercel dev",
-    "start": "node server.js",
-    "build": "echo 'No build step required'"
+   
+    "start": "node server.js"
+   
   },
   "keywords": [],
   "author": "",
@@ -16,8 +16,6 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "mongoose": "^8.9.5"
-  },
-  "engines": {
-    "node": ">=22.x"
   }
+ 
 }
