@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
+import shortenHandler from './api/shorten.js';
 
 dotenv.config();
 
@@ -16,7 +17,7 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
     .catch(err => console.error('MongoDB connection error:', err));
 
 // Rotas
-app.use('/api/shorten', require('./api/shorten').default);
+app.use('/api/shorten', shortenHandler);
 
 // Iniciar o servidor
 app.listen(PORT, () => {
